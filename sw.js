@@ -1,7 +1,7 @@
 // Bump VERSION whenever you upload changed files, so phones pick up the update.
 const VERSION = "recall-v1";
 const FILES = ["./", "./index.html", "./routine.html", "./manifest.webmanifest",
-  "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
+  "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
