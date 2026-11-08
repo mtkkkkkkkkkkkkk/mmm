@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3d6b8f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>mtk — Winter 2026/27 Study Routine</title>
+<style>
+:root{
+  --bg:#f7f6f2;--card:#fff;--ink:#1d1f23;--mute:#6b6f76;--line:#e4e2dc;
+  --acc:#2f5d8a;--acc2:#e9f0f7;--warn:#a2461f;--warn2:#fbeee6;--ok:#2e6b45;--ok2:#e8f3ec;
+  --c-calc:#2f5d8a;--c-circ:#b5651d;--c-alg:#6a4c93;--c-pchem:#2e6b45;--c-bio:#a23b5a;--c-anat:#4f6d7a;--c-int:#7a6a2e;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141518;--card:#1d1f23;--ink:#e9e9e6;--mute:#9a9ea5;--line:#2e3035;
+  --acc:#8bb4dc;--acc2:#1f2a36;--warn:#f0a37f;--warn2:#3a2519;--ok:#8fd0a6;--ok2:#1b2e23;
+  --c-calc:#8bb4dc;--c-circ:#e6a466;--c-alg:#b9a0dd;--c-pchem:#8fd0a6;--c-bio:#e391ab;--c-anat:#9fbecb;--c-int:#d3c27d;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap;padding:8px 12px}
+nav a{display:inline-block;margin-right:6px;padding:5px 10px;border-radius:999px;color:var(--ink);text-decoration:none;font-size:13px;border:1px solid var(--line);background:var(--card)}
+main{max-width:960px;margin:0 auto;padding:16px 14px 60px}
+h1{font-size:24px;margin:10px 0 2px}
+h2{font-size:19px;margin:34px 0 10px;padding-top:6px}
+h3{font-size:15px;margin:18px 0 6px}
+.sub{color:var(--mute);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.warn{background:var(--warn2);border-color:transparent}
+.warn b.t{color:var(--warn)}
+.ok{background:var(--ok2);border-color:transparent}
+.info{background:var(--acc2);border-color:transparent}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat .n{font-size:26px;font-weight:700}
+.stat .l{font-size:12px;color:var(--mute)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.scroll{overflow-x:auto}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:6px;color:#fff;margin:1px 2px 1px 0;white-space:nowrap}
+.calc{background:var(--c-calc)}.circ{background:var(--c-circ)}.alg{background:var(--c-alg)}.pchem{background:var(--c-pchem)}.bio{background:var(--c-bio)}.anat{background:var(--c-anat)}.int{background:var(--c-int)}
+@media (prefers-color-scheme:dark){.tag{color:#141518}}
+.hl{font-weight:700;color:var(--warn)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:3px 0}
+.time{font-variant-numeric:tabular-nums;color:var(--mute);white-space:nowrap;width:110px}
+.week td:first-child{white-space:nowrap;font-weight:600}
+.small{font-size:13px;color:var(--mute)}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:4px}
+.bar span{display:block;height:100%}
+footer{color:var(--mute);font-size:12.5px;margin-top:40px}
+</style>
+</head>
+<body>
+<nav style="padding-top:calc(8px + env(safe-area-inset-top))">
+  <a href="index.html">← Recall</a>  <a href="#numbers">The numbers</a><a href="#alerts">Alerts</a><a href="#rules">Rules</a><a href="#day">Week plan</a><a href="#week">Fri/Sat</a><a href="#hours">Hours</a><a href="#courses">Courses</a><a href="#timeline">Timeline</a><a href="#exams">Exam period</a><a href="#internship">Internship</a><a href="#friday">Friday review</a>
+</nav>
+<main>
+
+<h1>Winter 2026/27: Study Routine</h1>
+<p class="sub">BME, semester 3 · 19 credit points · semester runs 28.10.2026 – 28.1.2027 · built 6.11.2026</p>
+
+<!-- ============ NUMBERS ============ -->
+<h2 id="numbers">1. The honest numbers</h2>
+<div class="grid">
+  <div class="stat"><div class="n">59.9</div><div class="l">Current cumulative average (with Biology updated to 76), 37.5 graded points</div></div>
+  <div class="stat"><div class="n">19</div><div class="l">Credit points this semester. Calc 2 and Algebra 2 replace the old 27 and 37</div></div>
+  <div class="stat"><div class="n">~88–89</div><div class="l">Average you'd need in <b>all</b> new courses (sem 3 + sem 4, ± summer) to reach 80 overall</div></div>
+  <div class="stat"><div class="n">85+</div><div class="l">This semester's target average. That's the number you control now</div></div>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0">What each semester-3 average does to your cumulative average</h3>
+<div class="scroll"><table>
+<tr><th>Sem 3 average</th><th>Cumulative after sem 3</th></tr>
+<tr><td>75</td><td>70.7</td></tr>
+<tr><td>80</td><td>72.7</td></tr>
+<tr><td><b>85</b></td><td><b>74.6</b></td></tr>
+<tr><td>90</td><td>76.6</td></tr>
+</table></div>
+<h3>After semester 4 (assuming ~20 points there)</h3>
+<div class="scroll"><table>
+<tr><th>Sem 3</th><th>Sem 4</th><th>Cumulative</th></tr>
+<tr><td>85</td><td>85</td><td>77.7</td></tr>
+<tr><td>85</td><td>90</td><td>79.1</td></tr>
+<tr><td>90</td><td>90</td><td>80.5</td></tr>
+</table></div>
+<p class="small">80 is reachable, but only with ~88+ everywhere. Later retakes would make it easier: ODE (60, 4 pts) raised to 85 adds about 1.5 points to the average, and General Chem (64, 3 pts) adds about 0.8. A strong upward trend (sem 2 was 48.5, so sem 3 at 85+) is what internship interviewers actually notice.</p>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0">Where the points are (weight of each course in this semester's average)</h3>
+<table>
+<tr><td><span class="tag calc">Calc 2</span> 5.5 pts</td><td style="width:55%"><div class="bar"><span style="width:29%;background:var(--c-calc)"></span></div></td><td>29%</td></tr>
+<tr><td><span class="tag circ">Circuits</span> 4 pts</td><td><div class="bar"><span style="width:21%;background:var(--c-circ)"></span></div></td><td>21%</td></tr>
+<tr><td><span class="tag alg">Algebra 2</span> 2.5</td><td><div class="bar"><span style="width:13%;background:var(--c-alg)"></span></div></td><td>13%</td></tr>
+<tr><td><span class="tag pchem">Phys Chem</span> 2.5</td><td><div class="bar"><span style="width:13%;background:var(--c-pchem)"></span></div></td><td>13%</td></tr>
+<tr><td><span class="tag bio">Biochem</span> 2.5</td><td><div class="bar"><span style="width:13%;background:var(--c-bio)"></span></div></td><td>13%</td></tr>
+<tr><td><span class="tag anat">Anatomy</span> 2</td><td><div class="bar"><span style="width:11%;background:var(--c-anat)"></span></div></td><td>11%</td></tr>
+</table>
+<p class="small">Calc 2 + Circuits = half the semester. When time is short, they win.</p>
+</div>
+
+<!-- ============ ALERTS ============ -->
+<h2 id="alerts">2. Alerts from your schedule</h2>
+<div class="card warn"><b class="t">⚠ Moed B clash: Calc 2 and Circuits are both on 21.3.2027.</b><br>You can't count on moed B for both, so plan to pass both in moed A. Ask the faculty secretary now how clashing moed B exams are handled.</div>
+<div class="card warn"><b class="t">⚠ Anatomy is 23.2, Calc 2 is the next day (24.2).</b><br>Your heaviest course gets one day of final prep. Calc 2 must be ~90% exam-ready before 16.2. The exam-period plan below does this.</div>
+<div class="card warn"><b class="t">⚠ Phys Chem exam on 1.2, 4 days after the semester ends.</b><br>No study break, so Phys Chem must be exam-ready by 28.1. It's an open-material exam (85%), so build your own organized summary and formula binder every week during the semester.</div>
+<div class="card info"><b>The "1.1.2027 Phys Chem midterm" is very unlikely.</b> Phys Chem's syllabus has no midterm (85% exam + 15% Moodle exercises), and the Technion calendar in your Anatomy syllabus says no exams are held on 31.12–1.1. Confirm on Moodle and move on.</div>
+<div class="card info"><b>Graded attendance:</b> Circuits on <b>17.11</b> and <b>15.12</b> (4% each, and you also need the matching Moodle unit). Anatomy every Thursday 10:30 (attendance is 15% of the grade), plus 2 questions uploaded about 48h before each meeting.</div>
+<div class="card info"><b>Biochem midterm: Fri 18.12, 09:00</b> (15%, counts only if it helps your grade).</div>
+
+<!-- ============ RULES ============ -->
+<h2 id="rules">3. The rules (aimed at what went wrong before)</h2>
+<div class="card">
+<table>
+<tr><th>Old habit</th><th>Rule now</th></tr>
+<tr><td>Studying the night before</td><td><b>24-hour rule:</b> every lecture or tutorial gets 20–30 min of review the same day. You learn each topic in the week it's taught, not in February.</td></tr>
+<tr><td>Skipping lectures</td><td><b>Attend everything.</b> Circuits says material is taught orally and the course changed this year. Anatomy attendance is graded. A missed class is made up from the recording within 48h, no exceptions.</td></tr>
+<tr><td>Skipping weak topics</td><td><b>Weakest first:</b> each day's first deep block goes to the thing you least want to do. Every Friday, list your 3 weakest topics, and they get the first block next week.</td></tr>
+<tr><td>Over-relying on AI</td><td><b>30-minute solo rule:</b> attempt a problem alone for 30 min (on paper) before any AI. Then ask for a <i>hint</i>, not a solution, and re-solve it alone the next day. Algebra puts an exam question (6%) on the open homework, and Circuits asks you to submit your AI chat log, so solving it yourself is directly worth points.</td></tr>
+<tr><td>Passive reading</td><td><b>Active recall:</b> close the notes and write down what you remember, then check. Keep an <b>error log</b>: every mistake, why it happened, and the correct idea. Reread it every Friday.</td></tr>
+<tr><td>Homework at the deadline</td><td><b>Start on release day, submit 24h early.</b> Late Moodle submissions get 0.</td></tr>
+</table>
+</div>
+
+<!-- ============ DAY ============ -->
+<h2 id="day">4. Your week, hour by hour</h2>
+<div class="card info"><b>Remote/recorded classes</b> (Calc 2 and Algebra lectures are recordings; Biochem lecture and Phys Chem lecture you follow online):
+<ul>
+<li><b>Watch at the scheduled slot, never "later".</b> Recordings that pile up are the old pattern coming back. If you miss a slot, watch the recording within 48h.</li>
+<li>Prefer <b>live Zoom</b> over recordings for Biochem and Phys Chem: fixed time, and you can ask questions.</li>
+<li>Recording rules: library seat, paper notes, pause before each example and try it yourself first. 1.25× speed is fine, 2× isn't.</li>
+</ul></div>
+
+<div class="card scroll">
+<h3 style="margin-top:0">Sunday</h3>
+<table>
+<tr><td class="time">08:15–08:45</td><td>Recall: last week's weak topics (from Friday's list)</td></tr>
+<tr><td class="time">08:45–11:15</td><td><b>Deep A</b> <span class="tag calc">Calc 2</span> open HW sheet / weak topics</td></tr>
+<tr><td class="time">11:30–12:30</td><td><span class="tag calc">Calc 2</span> tutorial · Ullman 309</td></tr>
+<tr><td class="time">12:30–14:30</td><td><span class="tag calc">Calc 2</span> lecture recording #1 (library)</td></tr>
+<tr><td class="time">14:30–15:15</td><td>Lunch</td></tr>
+<tr><td class="time">15:15–17:45</td><td><b>Deep B</b> <span class="tag circ">Circuits</span> HW sheet (dry part)</td></tr>
+<tr><td class="time">18:00–18:20</td><td>🎹 Piano, then dinner</td></tr>
+<tr><td class="time">19:15–20:45</td><td><span class="tag calc">Calc 2</span> same-day review: redo today's tutorial problems alone</td></tr>
+<tr><td class="time">20:45–21:15</td><td><span class="tag bio">Biochem</span> flashcards + error log, then shutdown</td></tr>
+</table>
+</div>
+
+<div class="card scroll">
+<h3 style="margin-top:0">Monday</h3>
+<table>
+<tr><td class="time">08:15–08:45</td><td>Recall: yesterday's Calc 2</td></tr>
+<tr><td class="time">08:45–11:15</td><td><b>Deep A</b> <span class="tag alg">Algebra</span> open HW / proofs</td></tr>
+<tr><td class="time">11:30–13:30</td><td><span class="tag alg">Algebra</span> lecture recording</td></tr>
+<tr><td class="time">13:30–15:30</td><td><span class="tag calc">Calc 2</span> lecture recording #2 (eat during a pause)</td></tr>
+<tr><td class="time">15:30–16:30</td><td><span class="tag pchem">Phys Chem</span> tutorial · Ullman 504</td></tr>
+<tr><td class="time">16:30–17:45</td><td><span class="tag pchem">Phys Chem</span> Moodle exercise + this week's binder page</td></tr>
+<tr><td class="time">18:00–18:20</td><td>🎹 Piano, then dinner</td></tr>
+<tr><td class="time">19:15–20:15</td><td><span class="tag alg">Algebra</span> review of today's lecture (recall, then check)</td></tr>
+<tr><td class="time">20:15–21:30</td><td><span class="tag anat">Anatomy</span> recorded lecture + <b>upload 2 questions tonight</b> (deadline ≈ Tue 10:30)</td></tr>
+</table>
+<p class="small">Heaviest day for recordings. Keep the evening light if you're drained, but the Anatomy upload can't move.</p>
+</div>
+
+<div class="card scroll">
+<h3 style="margin-top:0">Tuesday</h3>
+<table>
+<tr><td class="time">08:15–09:15</td><td><span class="tag calc">Calc 2</span> WeBWorK</td></tr>
+<tr><td class="time">09:30–12:30</td><td><span class="tag circ">Circuits</span> lecture · Meyer 280 (17.11 &amp; 15.12 are graded attendance)</td></tr>
+<tr><td class="time">12:30–13:30</td><td>Lunch</td></tr>
+<tr><td class="time">13:30–14:30</td><td><span class="tag circ">Circuits</span> same-day review</td></tr>
+<tr><td class="time">14:30–15:30</td><td><span class="tag alg">Algebra</span> tutorial · Ullman 803</td></tr>
+<tr><td class="time">15:30–17:30</td><td><span class="tag pchem">Phys Chem</span> lecture on Zoom (from the library)</td></tr>
+<tr><td class="time">17:30–18:00</td><td><span class="tag pchem">Phys Chem</span> add today's lecture to the binder</td></tr>
+<tr><td class="time">18:00–18:20</td><td>🎹 Piano, then dinner</td></tr>
+<tr><td class="time">19:15–21:15</td><td><b>Deep B</b> <span class="tag circ">Circuits</span> HW (LTspice part)</td></tr>
+<tr><td class="time">21:15–21:45</td><td><span class="tag bio">Biochem</span> pre-read for tomorrow's lecture</td></tr>
+</table>
+<p class="small">Phys Chem's syllabus says 16:30–18:30 but your timetable says 15:30–17:30. If it's the later time, piano moves to 18:30 on Tuesdays.</p>
+</div>
+
+<div class="card scroll">
+<h3 style="margin-top:0">Wednesday</h3>
+<table>
+<tr><td class="time">08:30–10:30</td><td><span class="tag bio">Biochem</span> lecture on Zoom</td></tr>
+<tr><td class="time">10:30–11:00</td><td><span class="tag bio">Biochem</span> same-day review</td></tr>
+<tr><td class="time">11:00–13:30</td><td><b>Deep A</b> <span class="tag calc">Calc 2</span> weak topics / weekly past-exam question</td></tr>
+<tr><td class="time">13:30–14:30</td><td>Lunch</td></tr>
+<tr><td class="time">14:30–16:30</td><td><span class="tag circ">Circuits</span> tutorial · Meyer 165</td></tr>
+<tr><td class="time">16:30–17:30</td><td><span class="tag bio">Biochem</span> tutorial · Ullman 301</td></tr>
+<tr><td class="time">17:30–18:00</td><td>Quick review of both tutorials</td></tr>
+<tr><td class="time">18:00–18:20</td><td>🎹 Piano, then dinner</td></tr>
+<tr><td class="time">19:15–21:00</td><td><b>Deep B</b> <span class="tag bio">Biochem</span> HW when one is open, otherwise <span class="tag alg">Algebra</span> WeBWorK</td></tr>
+<tr><td class="time">21:00–21:15</td><td>Error log, then shutdown</td></tr>
+</table>
+</div>
+
+<div class="card scroll">
+<h3 style="margin-top:0">Thursday</h3>
+<table>
+<tr><td class="time">08:30–10:30</td><td><span class="tag calc">Calc 2</span> tutorial · Ullman 308</td></tr>
+<tr><td class="time">10:30–12:30</td><td><span class="tag anat">Anatomy</span> · BME 201 (mandatory, graded attendance)</td></tr>
+<tr><td class="time">12:30–13:30</td><td>Lunch</td></tr>
+<tr><td class="time">13:30–16:00</td><td><b>Deep A</b> <span class="tag circ">Circuits</span> finish the sheet with your partner and submit</td></tr>
+<tr><td class="time">16:00–17:45</td><td><span class="tag calc">Calc 2</span> redo today's tutorial problems alone</td></tr>
+<tr><td class="time">18:00–18:20</td><td>🎹 Piano, then dinner</td></tr>
+<tr><td class="time">19:15–20:45</td><td><span class="tag alg">Algebra</span> open HW + <span class="tag pchem">Phys Chem</span> binder</td></tr>
+<tr><td class="time">20:45</td><td>Done. Thursday night is yours.</td></tr>
+</table>
+</div>
+
+<!-- ============ WEEK ============ -->
+<h2 id="week">5. Friday &amp; Saturday</h2>
+<div class="card">
+<table>
+<tr><td class="time">Fri 09:30–12:30</td><td>Weekly review (section 11) + catch-up on anything missed + Phys Chem Moodle exercise if still open</td></tr>
+<tr><td class="time">Fri 14:00–17:00</td><td><span class="tag int">Internship</span> block (section 10)</td></tr>
+<tr><td class="time">Fri evening</td><td>Free</td></tr>
+<tr><td class="time">Saturday</td><td>Off. Optional 30 min in the evening to look at next week.</td></tr>
+</table>
+<p class="small">Wake around 07:45 and sleep around 23:30 every day, including weekends, ±1h.</p>
+</div>
+
+<!-- ============ HOURS ============ -->
+<h2 id="hours">6. Weekly hour budget</h2>
+<div class="card">
+<table>
+<tr><th>Course</th><th>Class + recordings</th><th>Own study</th><th>Notes</th></tr>
+<tr><td><span class="tag calc">Calc 2</span></td><td>8h</td><td><b>~9.5h</b></td><td>Exam is 90–100% of the grade, so most of your study time goes to solving problems.</td></tr>
+<tr><td><span class="tag circ">Circuits</span></td><td>5h</td><td><b>~8h</b></td><td>Weekly sheet in pairs (half LTspice). HW is 20% of the grade.</td></tr>
+<tr><td><span class="tag alg">Algebra 2</span></td><td>3h</td><td>~5h</td><td>All homework counts as מגן, plus a 6% exam question based on the open HW.</td></tr>
+<tr><td><span class="tag pchem">Phys Chem</span></td><td>3h</td><td>~3.5h</td><td>Moodle exercises + building your binder.</td></tr>
+<tr><td><span class="tag bio">Biochem</span></td><td>3h</td><td>~3.5h</td><td>Pre-read + flashcards + HW.</td></tr>
+<tr><td><span class="tag anat">Anatomy</span></td><td>2h</td><td>~2h</td><td>Recorded lecture + 2 questions.</td></tr>
+<tr><td><span class="tag int">Internship</span></td><td>—</td><td>3h</td><td>Fridays.</td></tr>
+<tr><td><b>Total</b></td><td><b>24h</b></td><td><b>~34.5h</b></td><td>About 58h/week, with Thursday evening, Friday evening and Saturday free.</td></tr>
+</table>
+</div>
+
+<!-- ============ COURSES ============ -->
+<h2 id="courses">7. Course cards</h2>
+
+<div class="card">
+<h3 style="margin-top:0"><span class="tag calc">Calc 2 · 104013 · 5.5 pts</span></h3>
+<ul>
+<li><b>Grade:</b> 5% open HW (6 sheets, best 5) + 5% WeBWorK (12, best 9) + 90–100% final. HW counts only if the final is ≥50.</li>
+<li><b>Topics:</b> vectors & geometry, limits/continuity, gradient & differentiability, implicit functions, Taylor & extrema, Lagrange, double/triple integrals, line & surface integrals, Green/Gauss/Stokes, conservative fields.</li>
+<li><b>Strategy:</b> you've studied most of this before, so use it. Do <b>one past exam question per week from week 4</b>, then full timed past exams from week 10. Keep your own 1-page sheet per topic (method + common traps).</li>
+<li><b>Exam:</b> A 24.2 · B 21.3 (clash).</li>
+</ul>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0"><span class="tag circ">Circuits · 440105 · 4 pts</span></h3>
+<ul>
+<li><b>Grade:</b> 70% final + 20% HW + 2% self-study task + 4% + 4% active-learning weeks. All of it counts only if the final is ≥55.</li>
+<li><b>Self-study task (capacitors & inductors):</b> opens after lecture 2, closes before lecture 4. <span class="hl">Do it this week.</span></li>
+<li><b>Exam:</b> 3h multiple choice with a formula sheet, so speed and accuracy matter. Practice MCQs under time.</li>
+<li><b>Topics:</b> KCL/KVL, nodal analysis, Thevenin/Norton, linearization, op-amps, 1st/2nd-order transients, logic circuits, sinusoidal steady state, power, resonance, coupling.</li>
+<li>This course is your EE foundation and the one closest to the internship you want. Learn it properly.</li>
+<li><b>Exam:</b> A 28.2 · B 21.3.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0"><span class="tag alg">Algebra 2 · 104038 · 2.5 pts</span></h3>
+<ul>
+<li><b>Grade:</b> up to 8% open HW + up to 6% computerized HW + 6% exam question based on the open HW + 80–100% final (all מגן, need ≥50 on the final).</li>
+<li><b>Open HW due:</b> 18.11 · 2.12 · 16.12 · 30.12 · 13.1 · 28.1. <b>Computerized:</b> 25.11 · 14.12 · 5.1 · 28.1.</li>
+<li><b>Topics:</b> inner products, Gram–Schmidt, projections, Riesz & adjoint, normal/self-adjoint/unitary, spectral theorem, SVD, norms, plus bilinear/quadratic forms if time allows.</li>
+<li>No HW solutions are published, so check your answers in office hours.</li>
+<li><b>Exam:</b> A 7.2 · B 7.3.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0"><span class="tag pchem">Physical Chem 1B · 1240503 · 2.5 pts</span></h3>
+<ul>
+<li><b>Grade:</b> 85% open-material exam + 15% Moodle exercises (submit 6 of the 8 mandatory ones; counts only if the exam is ≥55).</li>
+<li>Moodle answers: numbers only, no units, ±5% tolerance. Save drafts and submit early.</li>
+<li><b>Binder:</b> each week, one clean page with the week's equations, when to use them, and one worked example. By 28.1 this is your exam weapon.</li>
+<li><b>Topics:</b> gas laws, 1st law, enthalpy, Cp/Cv, entropy, Gibbs/Helmholtz, chemical potential, phase diagrams, Clausius–Clapeyron, colligative properties, equilibrium constants.</li>
+<li><b>Exam:</b> A 1.2 · B 11.3.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0"><span class="tag bio">Biochem & Enzymology · 1340019 · 2.5 pts</span></h3>
+<ul>
+<li><b>Grade:</b> 15% HW (5 sheets) + 15% midterm (מגן, <b>18.12</b>) + 70% final. Both count only if the final is passed.</li>
+<li>Read the assigned "Biochemistry Free For All" pages <b>before</b> each Wednesday lecture (15–20 min).</li>
+<li><b>Topics:</b> interactions & water, amino acids, protein structure, purification, Hb/Mb & cooperativity (Hill), enzyme kinetics (Michaelis–Menten, k<sub>cat</sub>, K<sub>m</sub>, inhibition).</li>
+<li>Daily 10-min flashcards (amino acids, structures, kinetics equations).</li>
+<li><b>Exam:</b> A 15.2 · B 15.3.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0"><span class="tag anat">Intro to Human Anatomy · 2 pts</span></h3>
+<ul>
+<li><b>Grade:</b> 70% final (need &gt;55) + 15% HW/questions + 15% attendance.</li>
+<li>Flipped class: watch the recorded lecture and upload 2 questions on Monday night (deadline ≈ 48h before class), attend Thu 10:30–12:30.</li>
+<li>Use the "entrepreneurship question" each week to practice thinking like a medtech engineer. It's good material for interviews.</li>
+<li>21.1: <b>Anatomical imaging (CT, MRI, US, X-ray)</b>. Directly on your target field, so take good notes.</li>
+<li><b>Exam:</b> A 23.2 · B 18.3.</li>
+</ul>
+</div>
+
+<!-- ============ TIMELINE ============ -->
+<h2 id="timeline">8. Semester timeline</h2>
+<p class="small">Every week also has: Circuits sheet, Calc 2 WeBWorK (and open sheets when released), Phys Chem Moodle exercise, Anatomy questions, Biochem HW when released.</p>
+<div class="card scroll">
+<table class="week">
+<tr><th>Week</th><th>Deadlines / events</th><th>Extra focus</th></tr>
+<tr><td>W3 · 8–12.11</td><td><span class="tag circ">Circuits</span> self-study task (before lecture 4) · <span class="tag anat">Anat</span> Nervous system 12.11</td><td>Set up error log + Phys Chem binder. Start the routine.</td></tr>
+<tr><td>W4 · 15–19.11</td><td><span class="tag circ">Circuits</span> <b>17.11 attendance</b> + Moodle unit · <span class="tag alg">Alg</span> open HW1 18.11</td><td><span class="tag int">Int</span> CV draft v1</td></tr>
+<tr><td>W5 · 22–26.11</td><td><span class="tag alg">Alg</span> computerized 1, 25.11 · <span class="tag anat">Anat</span> Respiratory 26.11</td><td>First Calc 2 past-exam question</td></tr>
+<tr><td>W6 · 29.11–3.12</td><td><span class="tag alg">Alg</span> open HW2 2.12 · <span class="tag anat">Anat</span> Heart 3.12</td><td><span class="tag int">Int</span> Python basics start</td></tr>
+<tr><td>W7 · 6–10.12</td><td>Hanukkah break 9–11.12</td><td><span class="tag bio">Biochem</span> midterm prep (break = 3 extra days)</td></tr>
+<tr><td>W8 · 13–17.12</td><td><span class="tag alg">Alg</span> comp 2, 14.12 · <span class="tag circ">Circuits</span> <b>15.12 attendance</b> · <span class="tag alg">Alg</span> open HW3 16.12 · <span class="tag anat">Anat</span> Vascular 17.12</td><td>Biochem final review</td></tr>
+<tr><td><b>Fri 18.12</b></td><td><span class="tag bio">Biochem midterm 09:00</span></td><td>—</td></tr>
+<tr><td>W9 · 20–24.12</td><td><span class="tag anat">Anat</span> Digestive 24.12</td><td><span class="tag int">Int</span> email labs (see below)</td></tr>
+<tr><td>W10 · 27–31.12</td><td><span class="tag alg">Alg</span> open HW4 30.12</td><td>Start <b>timed past exams</b>: Calc 2 (1/week), Algebra (1 every 2 weeks)</td></tr>
+<tr><td>W11 · 3–7.1</td><td><span class="tag alg">Alg</span> comp 3, 5.1 · <span class="tag anat">Anat</span> Musculoskeletal 7.1</td><td>Circuits MCQ practice starts</td></tr>
+<tr><td>W12 · 10–14.1</td><td><span class="tag alg">Alg</span> open HW5 13.1 · <span class="tag anat">Anat</span> Endocrine 14.1</td><td>Phys Chem binder complete through week 10</td></tr>
+<tr><td>W13 · 17–21.1</td><td><span class="tag anat">Anat</span> Imaging 21.1</td><td><b>Phys Chem exam mode:</b> past exams with your binder</td></tr>
+<tr><td>W14 · 24–28.1</td><td><span class="tag alg">Alg</span> open HW6 + comp 4, 28.1 · semester ends 28.1</td><td>Phys Chem past exams daily</td></tr>
+</table>
+</div>
+
+<!-- ============ EXAMS ============ -->
+<h2 id="exams">9. Exam-period plan (moed A)</h2>
+<div class="card">
+<table>
+<tr><th>Dates</th><th>Main (6–7h)</th><th>Secondary (2h)</th></tr>
+<tr><td>29–31.1</td><td><span class="tag pchem">Phys Chem</span> past exams with binder</td><td>—</td></tr>
+<tr><td><b>1.2</b></td><td colspan="2"><span class="tag pchem">Phys Chem exam</span></td></tr>
+<tr><td>2–6.2</td><td><span class="tag alg">Algebra</span></td><td><span class="tag calc">Calc 2</span></td></tr>
+<tr><td><b>7.2</b></td><td colspan="2"><span class="tag alg">Algebra exam</span></td></tr>
+<tr><td>8–14.2</td><td><span class="tag bio">Biochem</span></td><td><span class="tag calc">Calc 2</span> + every 2nd day <span class="tag circ">Circuits</span> MCQ</td></tr>
+<tr><td><b>15.2</b></td><td colspan="2"><span class="tag bio">Biochem exam</span></td></tr>
+<tr><td>16–22.2</td><td><span class="tag calc">Calc 2</span> mornings (full past exams)</td><td><span class="tag anat">Anatomy</span> afternoons and evenings (memorization)</td></tr>
+<tr><td><b>23.2</b></td><td colspan="2"><span class="tag anat">Anatomy exam</span>, then a light evening Calc 2 formula review and early sleep</td></tr>
+<tr><td><b>24.2</b></td><td colspan="2"><span class="tag calc">Calc 2 exam</span></td></tr>
+<tr><td>25–27.2</td><td><span class="tag circ">Circuits</span> timed MCQ exams</td><td>—</td></tr>
+<tr><td><b>28.2</b></td><td colspan="2"><span class="tag circ">Circuits exam</span></td></tr>
+</table>
+<p class="small">The logic: Calc 2 gets steady study all month instead of one day. Anatomy goes in the afternoon slot because it's memorization, which fits tired hours better than proofs.</p>
+</div>
+
+<!-- ============ INTERNSHIP ============ -->
+<h2 id="internship">10. Internship track: EE side of BME (signals & imaging)</h2>
+<div class="card ok">
+<b>Reality check:</b> for a 2nd-year with no CV yet, the most realistic summer position is usually <b>a Technion research lab</b> (BME or EE faculty, signals/imaging). Your strongest assets will be a strong sem-3 transcript, a small relevant project, and two real tools you've shipped.
+</div>
+<div class="card">
+<table>
+<tr><th>When</th><th>Friday block task</th></tr>
+<tr><td>Nov</td><td><b>CV v1</b> (English, 1 page): education, projects, skills. Visit the Technion career center (מרכז קריירה) for a free CV review.</td></tr>
+<tr><td>Nov</td><td><b>Write up your projects</b> honestly: "Office-hours finder for Technion students; Faculty study hub. Built with AI-assisted development (Claude Code)." Add usage numbers (users, classmates who used it). Be ready to explain in an interview <i>how</i> each one works.</td></tr>
+<tr><td>Dec</td><td><b>Python + NumPy basics</b> (Friday + 2×30 min weekly). Your projects show you can ship things; real coding basics make that credible.</td></tr>
+<tr><td>Dec–Jan</td><td><b>One signals mini-project:</b> filter a real ECG recording and detect heartbeats (free datasets, e.g. PhysioNet). It ties together Circuits (filters), Anatomy (heart, 3.12) and your target field, and it goes on GitHub + CV.</td></tr>
+<tr><td>Late Dec</td><td><b>Email 4–6 Technion labs</b> in biomedical signals/imaging: short email, CV attached, one sentence on why their lab, and your ECG project. Follow up after ~10 days.</td></tr>
+<tr><td>Jan</td><td>Search student/summer positions at medical-imaging & device companies (check Haifa-area R&D sites on LinkedIn and the companies' student-jobs pages). Apply to anything relevant.</td></tr>
+<tr><td>Feb</td><td>Paused for exams. Only reply to emails and do interviews.</td></tr>
+<tr><td>Mar</td><td>Send the updated transcript (sem 3) to labs that answered. The upward trend is your pitch.</td></tr>
+</table>
+</div>
+
+<!-- ============ FRIDAY ============ -->
+<h2 id="friday">11. Friday review (30 min, 9:30)</h2>
+<div class="card">
+<ol>
+<li>Did every class this week get its same-day review? If not, catch up first.</li>
+<li>Which homework is due next week? Has every sheet been started?</li>
+<li>Reread the error log. Pick <b>3 weakest topics</b>, and they get next week's first deep blocks.</li>
+<li>Hours check: did Calc 2 get ~9h and Circuits ~7h? If not, fix the plan, not just your motivation.</li>
+<li>How much AI did I use before trying a problem myself? Be honest.</li>
+<li>Write next week's top 5 tasks.</li>
+</ol>
+</div>
+
+<footer>Sources: your course syllabi (Algebra 2, Calc 2, Circuits syllabus + guidelines, Phys Chem, Biochem, Anatomy), exam schedule and grade sheet from 1.11.2026. Averages computed with the last attempt replacing a failed one; semester-4 credit count is an assumption. Dates are tentative per the syllabi, so check Moodle.</footer>
+</main>
+</body>
+</html>

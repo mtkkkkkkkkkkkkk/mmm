@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3d6b8f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Recall">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<title>Recall</title>
+<style>
+:root{
+  --bg:#f6f3ee;--card:#fffdf9;--ink:#24211d;--mute:#7b746a;--line:#e7e1d7;--soft:#efe9df;
+  --acc:#3d6b8f;--acc-ink:#fff;
+  --r1:#c4553d;--r2:#c98a2b;--r3:#3f8a5c;--r4:#3d6b8f;
+  --shadow:0 1px 2px rgba(40,30,20,.06),0 6px 20px rgba(40,30,20,.06);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#171615;--card:#211f1d;--ink:#ece7df;--mute:#a39b90;--line:#34302c;--soft:#2a2725;
+  --acc:#86b2d6;--acc-ink:#121212;--r1:#e2826c;--r2:#e3b061;--r3:#7cc497;--r4:#86b2d6;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(80px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
+header{display:flex;align-items:center;gap:10px;margin:4px 0 16px}
+header h1{font-size:20px;margin:0;font-weight:700;letter-spacing:-.01em;cursor:pointer}
+header .sync{margin-left:auto;font-size:12px;color:var(--mute)}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 14px;cursor:pointer;font-size:14.5px}
+.btn:hover{border-color:var(--mute)}
+.btn.primary{background:var(--acc);color:var(--acc-ink);border-color:transparent;font-weight:600}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--mute)}
+.btn.small{padding:5px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:default}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);margin:12px 0}
+.muted{color:var(--mute)}.small{font-size:13px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--soft);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:24px;line-height:1.2}
+.stat span{font-size:12px;color:var(--mute)}
+.deck{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.deck:first-of-type{border-top:0}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.deck .info{flex:1;min-width:0}
+.deck .name{font-weight:600}
+.meter{height:6px;border-radius:3px;background:var(--soft);overflow:hidden;display:flex;margin-top:6px}
+.meter i{display:block;height:100%}
+.pill{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--mute);margin:2px 4px 2px 0}
+.pill.link{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:6px}
+.tabs .btn{white-space:nowrap}
+/* study */
+.progress{height:4px;background:var(--soft);border-radius:2px;overflow:hidden;margin:6px 0 10px}
+.progress i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.flash{min-height:250px;display:flex;flex-direction:column;justify-content:center;padding:26px 22px;cursor:pointer;position:relative}
+.flash .deckname{position:absolute;top:12px;left:16px;font-size:12px;color:var(--mute);display:flex;gap:6px;align-items:center}
+.flash .q{font-size:20px;font-weight:600;line-height:1.4}
+.flash .a{font-size:17px;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);animation:fade .25s ease}
+.flash .why{margin-top:12px;font-size:14.5px;color:var(--mute);background:var(--soft);border-radius:10px;padding:10px 12px}
+.flash .why b{color:var(--ink)}
+.tap{font-size:13px;color:var(--mute);margin-top:18px}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.rate{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.rate button{border:0;border-radius:12px;padding:10px 4px;cursor:pointer;color:#fff;font-weight:600;font-size:14px;line-height:1.25}
+@media (prefers-color-scheme:dark){.rate button{color:#141414}}
+.rate button small{display:block;font-weight:400;opacity:.85;font-size:11.5px}
+.rate button.sug{outline:3px solid var(--ink);outline-offset:2px}
+.r1{background:var(--r1)}.r2{background:var(--r2)}.r3{background:var(--r3)}.r4{background:var(--r4)}
+.linkbox{margin-top:10px;font-size:14.5px;background:var(--soft);border-radius:10px;padding:10px 12px}
+textarea,input[type=text],select{width:100%;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px}
+textarea{min-height:90px;resize:vertical}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+.feedback{border-left:4px solid var(--acc);padding:8px 12px;margin-top:12px;background:var(--soft);border-radius:0 10px 10px 0;font-size:14.5px}
+.list .item{padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.list .item:first-child{border-top:0}
+.list .item .a{display:none;margin-top:6px;color:var(--mute);font-size:14.5px}
+.list .item.open .a{display:block}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+.empty{text-align:center;padding:30px 10px}
+.empty .big{font-size:42px}
+.gen-item{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.gen-item:first-child{border-top:0}
+.kbd{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 4px;color:var(--mute)}
+@media (max-width:480px){.flash .q{font-size:18px}.stat b{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 onclick="go('home')">Recall</h1>
+    <span class="sync" id="sync">Loading…</span>
+  </header>
+  <div id="app"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =================== STARTER LIBRARY =================== */
+const STARTER_DECKS = [
+  {id:"biochem", name:"Biochem & Enzymology", color:"#a23b5a", builtIn:true},
+  {id:"anatomy", name:"Human Anatomy", color:"#4f7a8a", builtIn:true},
+];
+const STARTER = [
+/* ---------- BIOCHEM ---------- */
+["biochem","b01","What drives the hydrophobic effect?","Mainly **entropy**: water molecules ordered around nonpolar groups are released when those groups cluster together, so the entropy of water increases.","Main driving force of protein folding: hydrophobic residues end up buried in the core.",["interactions","folding"],["b12","b13"]],
+["biochem","b02","Write the Henderson–Hasselbalch equation.","pH = pK_{a} + log([A^{−}]/[HA])","At pH = pK_{a}, half the group is protonated. Use it to predict the charge of side chains at a given pH.",["acid-base"],["b03"]],
+["biochem","b03","What is the isoelectric point (pI)?","The pH at which a molecule has **net charge 0**. For a simple amino acid: the average of the two pK_{a} values flanking the zwitterion.","At its pI a protein doesn't move in an electric field, which is the basis of isoelectric focusing.",["acid-base","amino acids"],["b02","b29"]],
+["biochem","b04","Which amino acids are acidic and which are basic? (3- and 1-letter codes)","Acidic: **Asp (D), Glu (E)**\nBasic: **Lys (K), Arg (R), His (H)**","His has pK_{a} ≈ 6, near physiological pH, which is why it's so common in active sites (it can donate or accept a proton).",["amino acids"],["b05"]],
+["biochem","b05","Which amino acids are aromatic? Which contain sulfur?","Aromatic: **Phe (F), Tyr (Y), Trp (W)**\nSulfur: **Cys (C), Met (M)**","Trp and Tyr absorb UV at 280 nm, which is how protein concentration is measured.",["amino acids"],["b06","b07"]],
+["biochem","b06","Which residues make proteins absorb at 280 nm?","Mainly **Trp** (strongest), then **Tyr**.","A_{280} on a spectrophotometer is the standard quick protein-concentration measurement.",["amino acids","methods"],["b05"]],
+["biochem","b07","What is a disulfide bond?","A covalent S–S bond formed by **oxidation of two Cys** side chains (forming cystine).","Common in extracellular proteins: it stabilizes tertiary and quaternary structure.",["interactions","structure"],["b05"]],
+["biochem","b08","One-letter codes: K, R, D, E, N, Q, W, Y, F?","K Lys · R Arg · D Asp · E Glu · N Asn · Q Gln · W Trp · Y Tyr · F Phe","These are the tricky ones. The rest mostly match their first letter.",["amino acids"],["b04"]],
+["biochem","b09","Why are Gly and Pro special?","**Gly**: H side chain, achiral, very flexible (common in turns).\n**Pro**: cyclic, rigid, no N–H to donate an H-bond, so it **breaks helices**.","Both show up in collagen (Gly-X-Y, often Pro/Hyp) and in β-turns.",["amino acids","structure"],["b15","b31"]],
+["biochem","b10","Properties of the peptide bond?","Partial **double-bond character** (resonance), so it's **planar** and rigid, usually **trans**. Rotation only around φ (N–Cα) and ψ (Cα–C).","This constraint is why only certain φ/ψ combinations are allowed (Ramachandran plot).",["structure"],["b11"]],
+["biochem","b11","What does a Ramachandran plot show?","The allowed (sterically possible) combinations of backbone dihedral angles **φ and ψ**. α-helix and β-sheet regions are the main allowed areas.","It's used to validate solved protein structures.",["structure"],["b10","b14"]],
+["biochem","b12","Define the 4 levels of protein structure.","**Primary**: amino acid sequence\n**Secondary**: local backbone H-bond patterns (α, β)\n**Tertiary**: full 3D fold of one chain\n**Quaternary**: arrangement of several subunits","Hemoglobin (α_{2}β_{2}) is the classic quaternary-structure example.",["structure"],["b14","b16"]],
+["biochem","b13","What did Anfinsen's experiment show?","Denatured RNase A (urea + β-mercaptoethanol) **refolds to its active form** when the denaturants are removed, so **the sequence determines the 3D structure**.","Foundation of structure prediction. Chaperones assist folding but don't encode the fold.",["folding"],["b12","b32"]],
+["biochem","b14","α-helix: geometry and H-bond pattern?","Right-handed, **3.6 residues/turn**, pitch 5.4 Å. C=O of residue i H-bonds to N–H of residue **i+4**. Side chains point outward.","Membrane-spanning segments are typically α-helices of ~20 hydrophobic residues.",["structure"],["b15","b09"]],
+["biochem","b15","Parallel vs antiparallel β-sheets?","Strands run in the same vs opposite directions. H-bonds are **between strands**. Antiparallel H-bonds are more linear, so those sheets are slightly more stable.","Amyloid fibrils (Alzheimer's) are stacked β-sheets.",["structure"],["b14"]],
+["biochem","b16","Myoglobin vs hemoglobin O_{2}-binding curves?","Mb: **hyperbolic** (one site, high affinity, P_{50} ≈ 2.8 torr).\nHb: **sigmoidal** (4 cooperative sites, P_{50} ≈ 26 torr).","The sigmoid lets Hb load O_{2} in the lungs and release a lot of it in tissues. Mb stores O_{2} in muscle.",["Hb/Mb","cooperativity"],["b17","b18"]],
+["biochem","b17","What is the Hill coefficient and its value for Hb?","n_{H} = slope of log(θ/(1−θ)) vs log[L]. n_{H} > 1 means positive cooperativity, = 1 none, < 1 negative. Hb: **n_{H} ≈ 2.8–3**.","n_{H} can never exceed the number of binding sites (4 for Hb).",["cooperativity"],["b16","b19"]],
+["biochem","b18","What is the Bohr effect?","Lower pH or higher CO_{2} **lowers Hb's O_{2} affinity** (curve shifts right), so more O_{2} is released in active tissue.","An elegant physiological feedback: tissues that make more acid and CO_{2} automatically get more O_{2}.",["Hb/Mb"],["b16","b20"]],
+["biochem","b19","T vs R state of hemoglobin?","**T (tense)**: deoxy, low O_{2} affinity.\n**R (relaxed)**: oxy, high affinity.\nO_{2} binding shifts the equilibrium T → R.","Concerted (MWC) model: all subunits switch together. Sequential (KNF): one subunit at a time.",["Hb/Mb","cooperativity"],["b17","b20"]],
+["biochem","b20","What does 2,3-BPG do to hemoglobin?","Binds the central cavity of **deoxy (T-state) Hb** and stabilizes it, so O_{2} affinity drops (curve shifts right).","Fetal Hb binds BPG weakly, so it has higher O_{2} affinity and pulls O_{2} from the mother's blood.",["Hb/Mb"],["b19","b18"]],
+["biochem","b21","Proximal vs distal histidine in Mb/Hb?","**Proximal His (F8)**: coordinates the heme Fe.\n**Distal His (E7)**: H-bonds bound O_{2} and reduces CO affinity.","CO still binds ~200× more tightly than O_{2}, which is why CO poisoning is so dangerous (pulse oximeters can miss it).",["Hb/Mb"],["b16"]],
+["biochem","b22","Sickle-cell anemia: the mutation?","**Glu6 → Val** in the **β chain** of Hb. The hydrophobic patch makes deoxy-HbS polymerize into fibers.","Classic example of one point mutation changing quaternary behavior.",["Hb/Mb","structure"],["b12"]],
+["biochem","b23","How do enzymes speed up reactions?","They **lower ΔG^{‡}** by stabilizing the **transition state**. They do **not** change ΔG or the equilibrium constant.","Transition-state analogs make powerful inhibitors, and many drugs are designed this way.",["kinetics","catalysis"],["b24","b28"]],
+["biochem","b24","Write the Michaelis–Menten equation.","v_{0} = V_{max}[S] / (K_{m} + [S])","Derived from E + S ⇌ ES → E + P with the steady-state assumption (Briggs–Haldane).",["kinetics"],["b25","b26","b27"]],
+["biochem","b25","What does K_{m} mean, and what is it in terms of rate constants?","K_{m} = the [S] at which **v_{0} = V_{max}/2**.\nK_{m} = (k_{−1} + k_{2})/k_{1}","Only when k_{2} ≪ k_{−1} does K_{m} ≈ K_{d} (affinity). Don't automatically read K_{m} as affinity.",["kinetics"],["b24","b26"]],
+["biochem","b26","Define k_{cat} and k_{cat}/K_{m}.","k_{cat} = V_{max}/[E]_{T}: the **turnover number** (substrate molecules converted per second per enzyme).\nk_{cat}/K_{m} = **catalytic efficiency** (specificity constant). Upper limit ≈ 10^{8}–10^{9} M^{−1}s^{−1} (diffusion).","Enzymes near the diffusion limit (e.g. catalase) are called catalytically perfect.",["kinetics"],["b24","b25"]],
+["biochem","b27","Lineweaver–Burk plot: equation, slope and intercepts?","1/v_{0} = (K_{m}/V_{max})(1/[S]) + 1/V_{max}\ny-intercept 1/V_{max}, x-intercept −1/K_{m}, slope K_{m}/V_{max}","Fast to read inhibition types from, but distorts error at low [S].",["kinetics"],["b28","b29b","b30"]],
+["biochem","b28","Competitive inhibition: effect on K_{m}, V_{max}, LB plot?","Inhibitor binds **free E** (at the active site). **K_{m} increases** (αK_{m}), **V_{max} unchanged**. LB lines meet **on the y-axis**.","Overcome by high [S]. Many drugs are competitive substrate analogs (e.g. methotrexate).",["kinetics","inhibition"],["b27","b29b"]],
+["biochem","b29b","Uncompetitive inhibition: effect on K_{m}, V_{max}, LB plot?","Inhibitor binds **only ES**. **Both K_{m} and V_{max} decrease** by the same factor α′. LB lines are **parallel**.","More substrate doesn't help: more ES just means more targets for the inhibitor.",["kinetics","inhibition"],["b28","b30"]],
+["biochem","b30","Pure noncompetitive inhibition: effect on K_{m}, V_{max}, LB plot?","Inhibitor binds E and ES equally (α = α′). **V_{max} decreases, K_{m} unchanged**. LB lines meet **on the x-axis**.","If α ≠ α′ it's mixed inhibition: lines meet off both axes.",["kinetics","inhibition"],["b28","b29b"]],
+["biochem","b29","Protein purification: what does each method separate by?","Gel filtration (size exclusion): **size**, and large proteins elute **first**.\nIon exchange: **charge**\nAffinity: **specific binding**\nSDS-PAGE: **mass** (denatured)\nIsoelectric focusing: **pI**","2D gel = IEF in one direction, then SDS-PAGE in the other.",["methods"],["b03","b32b"]],
+["biochem","b32b","Why does SDS-PAGE separate by mass only?","SDS **denatures** the protein and coats it with roughly uniform **negative charge per length**, so mobility depends on size, not native charge or shape.","Add a reducing agent (β-ME/DTT) to also break disulfide bonds.",["methods"],["b29","b07"]],
+["biochem","b31","Collagen: sequence and structure?","Repeating **Gly-X-Y** (X/Y often Pro, Hyp). Three left-handed chains wind into a right-handed **triple helix**. Gly is needed every 3rd position because it's the only residue that fits the center.","Prolyl hydroxylase needs **vitamin C**; without it collagen is weak (scurvy). Collagen is a key biomaterial in tissue engineering.",["structure","fibrous"],["b09"]],
+["biochem","b32","What do molecular chaperones do?","Help proteins fold correctly and **prevent aggregation** (e.g. Hsp70, the GroEL/ES chamber). They don't determine the final structure.","Consistent with Anfinsen: the information is in the sequence, and chaperones just improve the yield.",["folding"],["b13"]],
+/* ---------- ANATOMY ---------- */
+["anatomy","a01","Describe the anatomical position.","Standing upright, facing forward, feet together, **arms at the sides with palms facing forward**.","All directional terms (and imaging orientation conventions) are defined relative to it.",["orientation"],["a02","a05"]],
+["anatomy","a02","Sagittal vs frontal vs transverse planes?","**Sagittal**: left/right (midsagittal = equal halves)\n**Frontal (coronal)**: anterior/posterior\n**Transverse (axial)**: superior/inferior","CT and MRI scroll through **axial** slices by default. Learn to picture organs in all three planes.",["orientation","imaging"],["a01","a29"]],
+["anatomy","a03","Proximal/distal vs medial/lateral?","**Proximal/distal**: closer to / farther from where a limb attaches to the trunk.\n**Medial/lateral**: closer to / farther from the midline.","Used for implant and electrode placement descriptions (e.g. distal femur prosthesis).",["orientation"],["a04"]],
+["anatomy","a04","Superficial/deep and ipsilateral/contralateral?","**Superficial/deep**: toward / away from the body surface.\n**Ipsilateral/contralateral**: same / opposite side.","Motor cortex controls the **contralateral** side of the body, which matters for stroke and BCI work.",["orientation","nervous"],["a16"]],
+["anatomy","a05","Main divisions of the nervous system?","**CNS**: brain + spinal cord.\n**PNS**: cranial and spinal nerves + ganglia.\nPNS: **somatic** (voluntary) and **autonomic** (involuntary).","Interfaces either record from the CNS (EEG, ECoG, implants) or stimulate the PNS (vagus nerve stimulation, cochlear implants).",["nervous"],["a06","a07"]],
+["anatomy","a06","Afferent vs efferent?","**Afferent** = sensory, toward the CNS.\n**Efferent** = motor, away from the CNS.","Mnemonic: **A**fferent **A**rrives, **E**fferent **E**xits.",["nervous"],["a05","a20"]],
+["anatomy","a07","Sympathetic vs parasympathetic: role and origin?","**Sympathetic**: fight or flight. Thoracolumbar outflow (T1–L2).\n**Parasympathetic**: rest and digest. Craniosacral (CN III, VII, IX, X + S2–S4).","Heart-rate variability (from ECG) is a non-invasive window into the sympathetic/parasympathetic balance.",["nervous","autonomic"],["a24"]],
+["anatomy","a08","Main parts of a neuron and their roles?","**Dendrites**: receive input. **Soma**: integrates it. **Axon**: conducts the action potential. **Axon terminals**: synapse and release neurotransmitter.","Electrodes pick up the extracellular field from these currents.",["nervous","cells"],["a09","a10"]],
+["anatomy","a09","What does myelin do, and who makes it?","Insulates axons, allowing **saltatory conduction** (jumping between **nodes of Ranvier**), which is much faster.\nCNS: **oligodendrocytes**. PNS: **Schwann cells**.","Multiple sclerosis = CNS demyelination, so conduction slows. Nerve conduction studies measure exactly this.",["nervous","cells"],["a08","a10"]],
+["anatomy","a10","Resting potential and the ions of an action potential?","Rest ≈ **−70 mV**. Depolarization: **Na^{+} influx**. Repolarization: **K^{+} efflux**. The Na^{+}/K^{+} pump restores gradients.","This is your Circuits course in biology: the membrane is modeled as a capacitor with ion-channel conductances (Hodgkin–Huxley).",["nervous","physiology"],["a08","a09"]],
+["anatomy","a11","Four cerebral lobes and their main functions?","**Frontal**: planning, motor (precentral gyrus = primary motor cortex)\n**Parietal**: somatosensory (postcentral gyrus)\n**Temporal**: hearing, memory, language comprehension\n**Occipital**: vision","EEG electrode names follow the lobes: F, C, P, T, O in the 10–20 system.",["brain"],["a12","a13","a28"]],
+["anatomy","a12","What does the cerebellum do?","**Coordination**, balance, posture, motor learning (fine-tunes movement). It doesn't start movement.","Cerebellar damage causes ataxia: uncoordinated but not paralyzed.",["brain"],["a11","a13"]],
+["anatomy","a13","Brainstem parts and key roles?","**Midbrain**, **pons**, **medulla oblongata**. The medulla holds **cardiovascular and respiratory centers**. Cranial nerves III–XII emerge from the brainstem.","Brainstem injury is life-threatening because vital autonomic control lives there.",["brain"],["a12","a24"]],
+["anatomy","a14","Thalamus vs hypothalamus?","**Thalamus**: relay station for sensory info going to the cortex.\n**Hypothalamus**: homeostasis (temperature, hunger, thirst) and **controls the pituitary**.","The hypothalamus–pituitary axis connects to the endocrine module later (14.1).",["brain","endocrine"],["a11"]],
+["anatomy","a15","What connects the two cerebral hemispheres?","The **corpus callosum** (largest white-matter tract).","Visible on a midsagittal MRI as a C-shaped bright band (T1).",["brain","imaging"],["a02"]],
+["anatomy","a16","Where are Broca's and Wernicke's areas, and what do they do?","Usually in the **left hemisphere**.\n**Broca's** (inferior frontal gyrus): speech **production**.\n**Wernicke's** (posterior superior temporal gyrus): language **comprehension**.","Speech BCIs decode signals from these regions and the motor cortex to restore communication.",["brain","language"],["a11"]],
+["anatomy","a17","The three meninges, outside to inside?","**Dura mater**, **arachnoid mater**, **pia mater**. CSF flows in the **subarachnoid space**.","Mnemonic: DAP. Epidural vs subdural hematomas are defined relative to the dura.",["brain","CNS protection"],["a18"]],
+["anatomy","a18","Where is CSF made, and what does it do?","Made by the **choroid plexus** in the ventricles. Cushions the brain, gives buoyancy, removes waste.","Hydrocephalus is treated with a **shunt**, a classic medical device.",["CNS protection"],["a17","a23"]],
+["anatomy","a19","What forms the blood–brain barrier?","**Tight junctions** between brain capillary endothelial cells, supported by astrocyte end-feet.","Major challenge for drug delivery to the brain. Focused ultrasound can temporarily open it.",["CNS protection","cells"],["a18"]],
+["anatomy","a20","Spinal cord gray matter: dorsal vs ventral horn?","**Dorsal (posterior) horn**: sensory input.\n**Ventral (anterior) horn**: motor neuron cell bodies.\nWhite matter around them = ascending and descending tracts.","Ventral horn motor neurons are lost in ALS.",["spinal cord"],["a06","a21","a22"]],
+["anatomy","a21","How many spinal nerve pairs, by region?","**31 pairs**: 8 cervical, 12 thoracic, 5 lumbar, 5 sacral, 1 coccygeal.","8 cervical nerves but only 7 cervical vertebrae: C8 exits below C7.",["spinal cord"],["a20"]],
+["anatomy","a22","What is in the dorsal root ganglion?","**Cell bodies of sensory (afferent) neurons.**","DRG stimulation is a neuromodulation therapy for chronic pain.",["spinal cord"],["a20","a06"]],
+["anatomy","a23","Where does the spinal cord end, and where is a lumbar puncture done?","The cord ends at about **L1–L2** (conus medullaris). Lumbar puncture is done at **L3–L4 or L4–L5**, below the cord.","Below the cord there's only the cauda equina (nerve roots floating in CSF), so the needle is safe.",["spinal cord"],["a18"]],
+["anatomy","a24","List the 12 cranial nerves.","I olfactory · II optic · III oculomotor · IV trochlear · V trigeminal · VI abducens · VII facial · VIII vestibulocochlear · IX glossopharyngeal · X **vagus** · XI accessory · XII hypoglossal","Cochlear implants stimulate the auditory branch of CN VIII. Vagus nerve stimulators treat epilepsy and depression.",["cranial nerves"],["a25","a07"]],
+["anatomy","a25","What does the vagus nerve (CN X) do?","The major **parasympathetic** supply to thoracic and abdominal organs (heart, lungs, gut). It also carries sensory info back to the brain.","Vagal tone slows the heart, which is the parasympathetic side of heart-rate variability.",["cranial nerves","autonomic"],["a24","a07"]],
+["anatomy","a26","Components of a reflex arc?","**Receptor**, **afferent neuron**, **integration center** (CNS), **efferent neuron**, **effector**.","The knee-jerk reflex is monosynaptic: afferent synapses directly on the motor neuron.",["spinal cord","reflex"],["a20","a06"]],
+["anatomy","a27","What is deep brain stimulation (DBS)?","Implanted electrodes deliver electrical pulses to deep nuclei, e.g. the **subthalamic nucleus** or GPi for **Parkinson's disease**.","A pure EE + anatomy device: stereotactic targeting from MRI, a pulse generator in the chest, closed-loop versions sense signals.",["BME","brain"],["a28"]],
+["anatomy","a28","What does EEG measure?","Summed **postsynaptic potentials** of cortical pyramidal neurons, recorded at the scalp. High time resolution, poor spatial resolution.","Signals & imaging core: filtering, artifact removal, frequency bands (δ θ α β γ).",["BME","signals"],["a11","a27"]],
+["anatomy","a29","CT vs MRI: what each is good at?","**CT**: X-ray attenuation. Fast, great for **bone** and bleeding. Ionizing radiation.\n**MRI**: hydrogen proton signal. Excellent **soft-tissue** contrast. No ionizing radiation, slower.","Your future field: imaging physics, reconstruction, and segmentation (Anatomy lecture 21.1).",["imaging","BME"],["a02","a15"]],
+];
+function buildStarter(){
+  return STARTER.map(([deck,id,q,a,why,tags,links])=>({deck,id,q,a,why,tags,links,builtIn:true}));
+}
+
+/* =================== STATE =================== */
+const LS_KEY="recall-v1";
+let S = { progress:{}, days:{}, settings:{newPerDay:15}, decks:[], cards:[], updatedAt:0, customUpdatedAt:0 };
+let db=null, uid=null, sampleFn=null;
+let syncMode="local"; // "local" | "account"
+const STARTER_CARDS = buildStarter();
+
+function allDecks(){ return [...STARTER_DECKS, ...S.decks]; }
+function allCards(){ return [...STARTER_CARDS, ...S.cards]; }
+function cardById(id){ return allCards().find(c=>c.id===id); }
+function deckById(id){ return allDecks().find(d=>d.id===id); }
+
+function loadLocal(){
+  try{ const raw=localStorage.getItem(LS_KEY); if(raw){ Object.assign(S, JSON.parse(raw)); } }catch(e){}
+}
+function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+
+/* --- db sync: two docs, one write at a time each --- */
+const writers={progress:{busy:false,again:false},custom:{busy:false,again:false}};
+let saveTimer=null, dirty={progress:false,custom:false};
+function markDirty(which){
+  if(which==="custom") S.customUpdatedAt=Date.now(); else S.updatedAt=Date.now();
+  dirty[which]=true; saveLocal();
+  clearTimeout(saveTimer); saveTimer=setTimeout(flush,1200);
+}
+function flush(){ if(dirty.progress){dirty.progress=false;write("progress");} if(dirty.custom){dirty.custom=false;write("custom");} }
+async function write(which){
+  if(!db||!uid) return;
+  const w=writers[which];
+  if(w.busy){ w.again=true; return; }
+  w.busy=true; setSync("Saving…");
+  try{
+    const ref=db.collection("data/users/"+uid).doc(which);
+    const body = which==="progress"
+      ? {progress:S.progress, days:S.days, settings:S.settings, updatedAt:S.updatedAt}
+      : {decks:S.decks, cards:S.cards, updatedAt:S.customUpdatedAt};
+    await ref.set(JSON.parse(JSON.stringify(body)));
+    setSync("Synced to your account");
+  }catch(e){
+    if(e&&e.code==="unavailable"){ setTimeout(()=>{w.busy=false;write(which);},1500+Math.random()*1500); return; }
+    if(e&&e.code==="quota_exceeded") toast("Storage is full. Export a backup in Settings.");
+    syncMode="local"; setSync("Saved on this device only");
+  }
+  w.busy=false;
+  if(w.again){ w.again=false; write(which); }
+}
+function setSync(t){ document.getElementById("sync").textContent=t; }
+
+async function initCloud(){
+  try{ if(navigator.storage&&navigator.storage.persist) await navigator.storage.persist(); }catch(e){}
+  setSync("Saved on this device");
+  if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+}
+
+/* =================== SCHEDULER =================== */
+const DAY=864e5;
+function dayKey(t=Date.now()){ const d=new Date(t); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function startOfDay(t=Date.now()){ const d=new Date(t); d.setHours(0,0,0,0); return d.getTime(); }
+function schedule(prev, r){
+  const now=Date.now();
+  const p = prev ? {...prev} : {ivl:0,ease:2.5,reps:0,lapses:0};
+  let requeue=0;
+  const learning = p.reps===0 || p.ivl<1;
+  if(learning){
+    if(r===1){ p.ivl=0; requeue=3; p.due=now+60e3; }
+    else if(r===2){ p.ivl=0; requeue=6; p.due=now+10*60e3; }
+    else if(r===3){ p.ivl=1; p.reps++; }
+    else { p.ivl=3; p.reps++; p.ease=Math.min(3.2,p.ease+0.15); }
+  } else {
+    if(r===1){ p.lapses++; p.ease=Math.max(1.3,p.ease-0.2); p.ivl=0; requeue=3; p.due=now+60e3; }
+    else if(r===2){ p.ease=Math.max(1.3,p.ease-0.15); p.ivl=Math.max(1,p.ivl*1.2); p.reps++; }
+    else if(r===3){ p.ivl=Math.max(p.ivl+1,p.ivl*p.ease); p.reps++; }
+    else { p.ease=Math.min(3.2,p.ease+0.15); p.ivl=Math.max(p.ivl+2,p.ivl*p.ease*1.3); p.reps++; }
+  }
+  if(p.ivl>=1){ p.ivl=Math.round(p.ivl*10)/10; p.due=startOfDay(now)+Math.round(p.ivl)*DAY+4*36e5; }
+  p.last=now;
+  return {p,requeue};
+}
+function fmtIvl(p){
+  if(p.ivl<1){ const m=Math.round((p.due-Date.now())/60e3); return m<=1?"1 min":m+" min"; }
+  const d=Math.round(p.ivl);
+  if(d<14) return d+(d===1?" day":" days");
+  if(d<60) return Math.round(d/7)+" wk";
+  if(d<365) return (d/30).toFixed(1).replace(".0","")+" mo";
+  return (d/365).toFixed(1)+" yr";
+}
+function status(c){
+  const p=S.progress[c.id];
+  if(!p) return "new";
+  if(p.ivl>=21) return "strong";
+  if(p.ivl>=1) return "growing";
+  return "learning";
+}
+function isDue(c,now=Date.now()){ const p=S.progress[c.id]; return p && p.due<=now; }
+function today(){ return S.days[dayKey()]||{reviews:0,newDone:0,right:0}; }
+function streak(){
+  let n=0, t=Date.now();
+  if(!(S.days[dayKey(t)]&&S.days[dayKey(t)].reviews)) t-=DAY;
+  while(S.days[dayKey(t)]&&S.days[dayKey(t)].reviews){ n++; t-=DAY; }
+  return n;
+}
+
+/* =================== UTIL =================== */
+function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmt(s){
+  return esc(s)
+    .replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")
+    .replace(/_\{(.+?)\}/g,"<sub>$1</sub>")
+    .replace(/\^\{(.+?)\}/g,"<sup>$1</sup>")
+    .replace(/\n/g,"<br>");
+}
+function plain(s){ return String(s??"").replace(/\*\*/g,"").replace(/_\{(.+?)\}/g,"$1").replace(/\^\{(.+?)\}/g,"^$1"); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function rid(p){ return p+"_"+Math.random().toString(36).slice(2,9); }
+let toastT; function toast(t){ const el=document.getElementById("toast"); el.textContent=t; el.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("on"),2200); }
+const $app=()=>document.getElementById("app");
+
+/* =================== VIEWS =================== */
+let view={name:"home"};
+function go(name,extra={}){ view={name,...extra}; render(); window.scrollTo(0,0); }
+
+function deckCounts(deckId){
+  const cards=allCards().filter(c=>c.deck===deckId);
+  const now=Date.now();
+  const r={total:cards.length,new:0,learning:0,growing:0,strong:0,due:0};
+  cards.forEach(c=>{ r[status(c)]++; if(isDue(c,now)) r.due++; });
+  return r;
+}
+function newLeft(){ return Math.max(0,(S.settings.newPerDay||15)-today().newDone); }
+
+function renderHome(){
+  const t=today(), st=streak();
+  const decks=allDecks();
+  let totalDue=0, totalNew=0;
+  const rows=decks.map(d=>{
+    const k=deckCounts(d.id); totalDue+=k.due; totalNew+=k.new;
+    const w=x=>k.total?(x/k.total*100):0;
+    return `<div class="deck">
+      <span class="dot" style="background:${esc(d.color)}"></span>
+      <div class="info">
+        <div class="name">${esc(d.name)}</div>
+        <div class="small muted">${k.due} due · ${k.new} new · ${k.strong}/${k.total} strong</div>
+        <div class="meter"><i style="width:${w(k.strong)}%;background:var(--r3)"></i><i style="width:${w(k.growing)}%;background:var(--r4)"></i><i style="width:${w(k.learning)}%;background:var(--r2)"></i></div>
+      </div>
+      <button class="btn small ${k.due||k.new?"primary":""}" onclick="startSession(['${d.id}'])" ${k.due||(k.new&&newLeft())?"":"disabled"}>Study</button>
+    </div>`;
+  }).join("");
+  const newToday=Math.min(totalNew,newLeft());
+  const est=Math.max(1,Math.round((totalDue+newToday)*0.35));
+  const greet = totalDue+newToday===0 ? "You're all caught up. Come back tomorrow, the spacing is doing its work."
+    : `About <b>${est} min</b> today: ${totalDue} reviews + ${newToday} new cards.`;
+  $app().innerHTML=`
+    <div class="card">
+      <div class="stats">
+        <div class="stat"><b>${totalDue}</b><span>due now</span></div>
+        <div class="stat"><b>${t.reviews}</b><span>reviewed today</span></div>
+        <div class="stat"><b>${st}🔥</b><span>day streak</span></div>
+      </div>
+      <p style="margin:14px 0 12px">${greet}</p>
+      <button class="btn primary" style="width:100%" onclick="startSession(allDecks().map(d=>d.id))" ${totalDue+newToday?"":"disabled"}>Start today's session</button>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:4px"><b>Decks</b><button class="btn small ghost" onclick="go('deckform')">+ New deck</button></div>
+      ${rows}
+      <div class="row small muted" style="margin-top:10px;gap:12px"><span><span class="dot" style="display:inline-block;background:var(--r3)"></span> strong (3+ weeks)</span><span><span class="dot" style="display:inline-block;background:var(--r4)"></span> growing</span><span><span class="dot" style="display:inline-block;background:var(--r2)"></span> learning</span></div>
+    </div>
+    <div class="row">
+      <button class="btn" onclick="go('cardform')">+ Add card</button>
+      ${sampleFn?`<button class="btn" onclick="go('generate')">✨ Cards from notes</button>`:""}
+      <button class="btn" onclick="go('browse')">Browse & connections</button>
+      <a class="btn" href="routine.html" style="text-decoration:none">📅 Study plan</a>
+      <button class="btn ghost" onclick="go('settings')">Settings</button>
+    </div>`;
+}
+
+/* ---------- SESSION ---------- */
+let sess=null;
+function startSession(deckIds){
+  const now=Date.now();
+  const pool=allCards().filter(c=>deckIds.includes(c.deck));
+  const due=pool.filter(c=>isDue(c,now)).sort((a,b)=>S.progress[a.id].due-S.progress[b.id].due);
+  const fresh=shuffle(pool.filter(c=>!S.progress[c.id])).slice(0,newLeft());
+  // interleave new cards among reviews so it doesn't feel like a wall
+  const q=[...due]; fresh.forEach((c,i)=>q.splice(Math.min(q.length, (i+1)*3), 0, c));
+  if(!q.length){ toast("Nothing due here right now"); return; }
+  sess={queue:q.map(c=>c.id).slice(0,80), done:0, total:Math.min(q.length,80), revealed:false, results:{}, explain:sess?sess.explain:false, answer:"", grade:null, grading:false, openLink:null};
+  go("study");
+}
+function curCard(){ return sess&&cardById(sess.queue[0]); }
+function renderStudy(){
+  if(!sess||!sess.queue.length) return renderSummary();
+  const c=curCard(); if(!c){ sess.queue.shift(); return renderStudy(); }
+  const d=deckById(c.deck)||{name:"",color:"#888"};
+  const p=S.progress[c.id];
+  const pct=Math.round(sess.done/Math.max(sess.total,1)*100);
+  const tag = !p?"new":(p.ivl<1?"learning":"review");
+  let body=`<div class="q">${fmt(c.q)}</div>`;
+  if(!sess.revealed && sess.explain){
+    body+=`<textarea id="ans" placeholder="Explain it in your own words (English or Hebrew)…" onclick="event.stopPropagation()">${esc(sess.answer)}</textarea>
+      <div class="row" style="margin-top:10px" onclick="event.stopPropagation()">
+        ${sampleFn?`<button class="btn primary" onclick="checkAnswer()" ${sess.grading?"disabled":""}>${sess.grading?"Claude is reading…":"Check with Claude"}</button>`:""}
+        <button class="btn" onclick="reveal()">Just show answer</button>
+      </div>`;
+  } else if(!sess.revealed){
+    body+=`<div class="tap">Tap or press <span class="kbd">space</span> to reveal. Try to say the answer out loud first.</div>`;
+  } else {
+    if(sess.grade) body+=`<div class="feedback"><b>${["Not yet","Partly there","Mostly right","Nailed it"][sess.grade.score]||""}</b>: ${esc(sess.grade.feedback)}</div>`;
+    body+=`<div class="a">${fmt(c.a)}</div>`;
+    if(c.why) body+=`<div class="why"><b>Why it matters:</b> ${fmt(c.why)}</div>`;
+    const links=(c.links||[]).map(cardById).filter(Boolean);
+    if(links.length||(c.tags||[]).length){
+      body+=`<div style="margin-top:12px" onclick="event.stopPropagation()">
+        ${(c.tags||[]).map(t=>`<span class="pill">#${esc(t)}</span>`).join("")}
+        ${links.length?`<div class="small muted" style="margin:8px 0 2px">Connected to:</div>`+links.map(l=>`<span class="pill link" onclick="toggleLink('${l.id}')">${esc(plain(l.q).slice(0,48))}${plain(l.q).length>48?"…":""}</span>`).join(""):""}
+        ${sess.openLink&&cardById(sess.openLink)?`<div class="linkbox"><b>${fmt(cardById(sess.openLink).q)}</b><br>${fmt(cardById(sess.openLink).a)}</div>`:""}
+      </div>`;
+    }
+  }
+  let rate="";
+  if(sess.revealed){
+    const sug = sess.grade ? [1,2,3,3][sess.grade.score] : 0;
+    const labels=[["Blanked","r1"],["Shaky","r2"],["Got it","r3"],["Easy","r4"]];
+    rate=`<div class="rate">${labels.map(([l,cls],i)=>{const r=i+1;const pv=schedule(p,r).p;return `<button class="${cls} ${sug===r?"sug":""}" onclick="rateCard(${r})">${l}<small>${fmtIvl(pv)}</small></button>`;}).join("")}</div>
+    <div class="small muted" style="text-align:center;margin-top:6px">Keys <span class="kbd">1</span>–<span class="kbd">4</span></div>`;
+  }
+  $app().innerHTML=`
+    <div class="row" style="justify-content:space-between">
+      <button class="btn small ghost" onclick="endSession()">← End</button>
+      <span class="small muted">${sess.done} done · ${sess.queue.length} left</span>
+      <button class="btn small ${sess.explain?"primary":""}" onclick="toggleExplain()">✍️ Explain mode</button>
+    </div>
+    <div class="progress"><i style="width:${pct}%"></i></div>
+    <div class="card flash" onclick="${sess.revealed||sess.explain?"":"reveal()"}">
+      <div class="deckname"><span class="dot" style="background:${esc(d.color)}"></span>${esc(d.name)} · ${tag}</div>
+      ${body}
+    </div>
+    ${rate}`;
+  const ta=document.getElementById("ans"); if(ta){ ta.addEventListener("input",e=>sess.answer=e.target.value); }
+}
+function reveal(){ if(!sess) return; sess.revealed=true; render(); }
+function toggleExplain(){ sess.explain=!sess.explain; render(); }
+function toggleLink(id){ sess.openLink = sess.openLink===id?null:id; render(); }
+async function checkAnswer(){
+  const c=curCard(); const ans=(sess.answer||"").trim();
+  if(!ans){ toast("Write something first, even a guess"); return; }
+  sess.grading=true; render();
+  const prompt=`You are grading a university student's flashcard recall for spaced repetition.
+Question: ${plain(c.q)}
+Reference answer: ${plain(c.a)}
+Student's answer: ${ans}
+
+Judge only whether the student's answer captures the key ideas of the reference answer. Ignore wording, spelling and language (the student may write in Hebrew or English). Be fair but strict about missing key facts.
+Return JSON only: {"score": <0|1|2|3>, "feedback": "<1-2 short sentences in English: what was right and exactly what was missing or wrong>"}
+Scores: 0 = wrong or empty, 1 = partial with major gaps, 2 = mostly right with minor gaps, 3 = complete.`;
+  try{
+    let g;
+    if(sampleFn.json) g=await sampleFn.json(prompt,{modelTier:"quick"});
+    else { const r=await sampleFn(prompt,{modelTier:"quick"}); g=JSON.parse(r.text.replace(/```json|```/g,"").trim()); }
+    const score=Math.max(0,Math.min(3,parseInt(g.score)||0));
+    sess.grade={score,feedback:String(g.feedback||"")};
+    sess.revealed=true;
+  }catch(e){
+    if(e&&e.code==="not_granted"){ sampleFn=null; toast("Claude checking isn't available here"); }
+    else if(e&&e.code==="rate_limited") toast("Too many checks. Wait a minute, or just reveal");
+    else toast("Couldn't check right now, revealing instead");
+    sess.revealed=true;
+  }
+  sess.grading=false; render();
+}
+function rateCard(r){
+  const c=curCard(); if(!c) return;
+  const prev=S.progress[c.id];
+  const wasNew=!prev;
+  const {p,requeue}=schedule(prev,r);
+  S.progress[c.id]=p;
+  const k=dayKey(); const t=S.days[k]||{reviews:0,newDone:0,right:0};
+  t.reviews++; if(wasNew) t.newDone++; if(r>=3) t.right++;
+  S.days[k]=t;
+  // keep only ~90 days of day stats
+  const keys=Object.keys(S.days).sort(); while(keys.length>90) delete S.days[keys.shift()];
+  const res=sess.results[c.id]||{first:r,misses:0}; if(r===1) res.misses++; sess.results[c.id]=res;
+  sess.queue.shift();
+  if(requeue){ sess.queue.splice(Math.min(sess.queue.length,requeue),0,c.id); } else sess.done++;
+  sess.total=sess.done+sess.queue.length;
+  sess.revealed=false; sess.answer=""; sess.grade=null; sess.openLink=null;
+  markDirty("progress"); render();
+}
+function endSession(){ flush(); if(sess&&sess.done) { sess.queue=[]; go("study"); } else { sess=null; go("home"); } }
+function renderSummary(){
+  const ids=Object.keys(sess.results);
+  const firstTry=ids.filter(id=>sess.results[id].first>=3).length;
+  const tough=ids.filter(id=>sess.results[id].misses>0||sess.results[id].first<=2).map(cardById).filter(Boolean).slice(0,8);
+  const pct=ids.length?Math.round(firstTry/ids.length*100):0;
+  const msg = pct>=85?"Strong session.": pct>=60?"Solid. The shaky ones will come back soon, which is the point.":"Tough set, and that's fine: struggling to recall is exactly what makes memories stick.";
+  $app().innerHTML=`
+    <div class="card empty">
+      <div class="big">🌱</div>
+      <h2 style="margin:6px 0">Session done</h2>
+      <p class="muted">${ids.length} cards · ${pct}% right on the first try</p>
+      <p>${msg}</p>
+    </div>
+    ${tough.length?`<div class="card"><b>Worth a second look</b><div class="list" style="margin-top:6px">${tough.map(c=>`<div class="item" onclick="this.classList.toggle('open')"><div>${fmt(c.q)}</div><div class="a">${fmt(c.a)}</div></div>`).join("")}</div></div>`:""}
+    <button class="btn primary" style="width:100%" onclick="sess=null;go('home')">Back home</button>`;
+}
+
+/* ---------- BROWSE ---------- */
+function renderBrowse(){
+  const f=view.filter||"all", q=(view.q||"").toLowerCase(), tag=view.tag||"";
+  let cards=allCards().filter(c=>f==="all"||c.deck===f);
+  const tags=[...new Set(cards.flatMap(c=>c.tags||[]))].sort();
+  if(tag) cards=cards.filter(c=>(c.tags||[]).includes(tag));
+  if(q) cards=cards.filter(c=>(plain(c.q)+" "+plain(c.a)+" "+(c.tags||[]).join(" ")).toLowerCase().includes(q));
+  const stLabel={new:"new",learning:"learning",growing:"growing",strong:"strong"};
+  $app().innerHTML=`
+    <div class="row" style="margin-bottom:8px"><button class="btn small ghost" onclick="go('home')">← Home</button><b>Browse & connections</b></div>
+    <div class="tabs">
+      <button class="btn small ${f==="all"?"primary":""}" onclick="view.filter='all';view.tag='';render()">All</button>
+      ${allDecks().map(d=>`<button class="btn small ${f===d.id?"primary":""}" onclick="view.filter='${d.id}';view.tag='';render()">${esc(d.name)}</button>`).join("")}
+    </div>
+    <input type="text" id="search" placeholder="Search…" value="${esc(view.q||"")}">
+    <div style="margin:10px 0">${tags.map(t=>`<span class="pill link" style="${t===tag?"background:var(--acc);color:var(--acc-ink)":""}" onclick="view.tag=view.tag==='${esc(t)}'?'':'${esc(t)}';render()">#${esc(t)}</span>`).join("")}</div>
+    ${tag?`<p class="small muted">Topic cluster <b>#${esc(tag)}</b>: ${cards.length} cards. Try explaining how they connect before opening them.</p>`:""}
+    <div class="card list">${cards.length?cards.map(c=>{
+      const links=(c.links||[]).map(cardById).filter(Boolean);
+      return `<div class="item" onclick="this.classList.toggle('open')">
+        <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><div>${fmt(c.q)}</div><span class="pill">${stLabel[status(c)]}</span></div>
+        <div class="a">${fmt(c.a)}${c.why?`<div style="margin-top:6px"><i>${fmt(c.why)}</i></div>`:""}
+          ${links.length?`<div style="margin-top:6px">↔ ${links.map(l=>esc(plain(l.q).slice(0,40))).join(" · ")}</div>`:""}
+          ${!c.builtIn?`<div class="row" style="margin-top:8px" onclick="event.stopPropagation()"><button class="btn small" onclick="go('cardform',{edit:'${c.id}'})">Edit</button><button class="btn small" onclick="delCard('${c.id}',this)">Delete</button></div>`:""}
+        </div></div>`;}).join(""):`<p class="muted">No cards match.</p>`}</div>`;
+  const s=document.getElementById("search");
+  s.addEventListener("input",e=>{ view.q=e.target.value; clearTimeout(s._t); s._t=setTimeout(()=>{render(); const n=document.getElementById("search"); n.focus(); n.setSelectionRange(n.value.length,n.value.length);},250); });
+}
+function delCard(id,btn){
+  if(btn.dataset.sure!=="1"){ btn.dataset.sure="1"; btn.textContent="Tap again to delete"; return; }
+  S.cards=S.cards.filter(c=>c.id!==id); delete S.progress[id];
+  markDirty("custom"); markDirty("progress"); toast("Deleted"); render();
+}
+
+/* ---------- CARD FORM ---------- */
+function renderCardForm(){
+  const c = view.edit ? S.cards.find(x=>x.id===view.edit) : null;
+  const decks=allDecks();
+  const defDeck = c?c.deck:(view.deck||decks[0].id);
+  $app().innerHTML=`
+    <div class="row"><button class="btn small ghost" onclick="go('home')">← Home</button><b>${c?"Edit card":"New card"}</b></div>
+    <div class="card">
+      <label>Deck</label>
+      <select id="f-deck">${decks.map(d=>`<option value="${d.id}" ${d.id===defDeck?"selected":""}>${esc(d.name)}</option>`).join("")}</select>
+      <label>Question</label><textarea id="f-q" placeholder="e.g. What does the sinoatrial node do?">${esc(c?c.q:"")}</textarea>
+      <label>Answer</label><textarea id="f-a" placeholder="Short and precise. **bold** works, K_{m} for subscripts">${esc(c?c.a:"")}</textarea>
+      <label>Why it matters / how it connects (optional)</label><textarea id="f-w" style="min-height:60px" placeholder="Function, clinical link, or a device that depends on it">${esc(c?c.why:"")}</textarea>
+      <label>Tags (comma-separated)</label><input type="text" id="f-t" value="${esc(c?(c.tags||[]).join(", "):"")}" placeholder="heart, electrophysiology">
+      <p class="small muted">Cards with a shared tag form a cluster you can review together in Browse.</p>
+      <div class="row" style="margin-top:12px"><button class="btn primary" onclick="saveCard()">Save</button>${!c?`<button class="btn" onclick="saveCard(true)">Save & add another</button>`:""}</div>
+    </div>`;
+}
+function saveCard(another){
+  const q=document.getElementById("f-q").value.trim(), a=document.getElementById("f-a").value.trim();
+  if(!q||!a){ toast("Question and answer are both needed"); return; }
+  const deck=document.getElementById("f-deck").value, why=document.getElementById("f-w").value.trim();
+  const tags=document.getElementById("f-t").value.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);
+  if(view.edit){ const c=S.cards.find(x=>x.id===view.edit); Object.assign(c,{deck,q,a,why,tags}); }
+  else S.cards.push({id:rid("c"),deck,q,a,why,tags,links:[]});
+  markDirty("custom"); toast("Saved");
+  if(another) go("cardform",{deck}); else go("home");
+}
+
+/* ---------- DECK FORM ---------- */
+const COLORS=["#2f5d8a","#b5651d","#6a4c93","#2e6b45","#a23b5a","#4f7a8a","#7a6a2e","#c4553d"];
+function renderDeckForm(){
+  $app().innerHTML=`
+    <div class="row"><button class="btn small ghost" onclick="go('home')">← Home</button><b>New deck</b></div>
+    <div class="card">
+      <label>Name</label><input type="text" id="d-name" placeholder="e.g. Phys Chem formulas">
+      <label>Color</label><div class="row">${COLORS.map((c,i)=>`<button class="btn small" style="background:${c};width:34px;height:34px;padding:0;${i===0?"outline:3px solid var(--ink)":""}" data-c="${c}" onclick="document.querySelectorAll('[data-c]').forEach(b=>b.style.outline='');this.style.outline='3px solid var(--ink)';window._col='${c}'"></button>`).join("")}</div>
+      <div style="margin-top:14px"><button class="btn primary" onclick="saveDeck()">Create deck</button></div>
+    </div>`;
+  window._col=COLORS[0];
+}
+function saveDeck(){
+  const name=document.getElementById("d-name").value.trim(); if(!name){ toast("Give it a name"); return; }
+  S.decks.push({id:rid("d"),name,color:window._col}); markDirty("custom"); toast("Deck created"); go("home");
+}
+
+/* ---------- GENERATE ---------- */
+function renderGenerate(){
+  const g=view.gen||{};
+  $app().innerHTML=`
+    <div class="row"><button class="btn small ghost" onclick="go('home')">← Home</button><b>✨ Cards from your notes</b></div>
+    <div class="card">
+      <p class="small muted" style="margin-top:0">Paste lecture notes, a summary page or slide text (Hebrew is fine). Claude turns it into English cards. You review each one before it's added, so cut anything you don't want.</p>
+      <label>Deck</label><select id="g-deck">${allDecks().map(d=>`<option value="${d.id}" ${g.deck===d.id?"selected":""}>${esc(d.name)}</option>`).join("")}</select>
+      <label>Notes</label><textarea id="g-text" style="min-height:180px" placeholder="Paste here…">${esc(g.text||"")}</textarea>
+      <label>How many cards (max)</label><select id="g-n">${[8,12,20].map(n=>`<option ${g.n==n?"selected":""}>${n}</option>`).join("")}</select>
+      <div style="margin-top:12px"><button class="btn primary" onclick="generate()" ${g.busy?"disabled":""}>${g.busy?"Writing cards…":"Generate"}</button></div>
+    </div>
+    ${g.items?`<div class="card"><div class="row" style="justify-content:space-between"><b>${g.items.length} cards</b><button class="btn small primary" onclick="addGenerated()">Add selected</button></div>
+      ${g.items.map((it,i)=>`<div class="gen-item"><input type="checkbox" ${it.keep?"checked":""} onchange="view.gen.items[${i}].keep=this.checked"><div><div><b>${fmt(it.q)}</b></div><div class="small">${fmt(it.a)}</div>${it.why?`<div class="small muted"><i>${fmt(it.why)}</i></div>`:""}<div>${(it.tags||[]).map(t=>`<span class="pill">#${esc(t)}</span>`).join("")}</div></div></div>`).join("")}
+    </div>`:""}`;
+}
+async function generate(){
+  const text=document.getElementById("g-text").value.trim().slice(0,14000);
+  const deck=document.getElementById("g-deck").value, n=+document.getElementById("g-n").value;
+  if(text.length<40){ toast("Paste a bit more text"); return; }
+  const dname=(deckById(deck)||{}).name||"";
+  view.gen={text,deck,n,busy:true}; render();
+  const prompt=`Turn these course notes into high-quality flashcards for spaced repetition. The student is a biomedical engineering undergraduate at the Technion (course/deck: "${dname}").
+Rules:
+- One idea per card. Questions must require real recall (no yes/no).
+- Answers short and precise (at most 2-3 lines). You may use **bold** for the key term, and _{x} for subscripts.
+- Write in English even if the notes are in Hebrew; use standard English scientific terminology.
+- Use ONLY facts stated in the notes. Don't invent anything.
+- "why": one short sentence linking the fact to its function or mechanism, or to biomedical engineering, when that is natural; otherwise "".
+- "tags": 1-3 short lowercase topic words.
+- At most ${n} cards, prioritizing what is most exam-relevant.
+Return JSON only: an array of {"q": "...", "a": "...", "why": "...", "tags": ["..."]}.
+
+NOTES:
+${text}`;
+  try{
+    let arr;
+    if(sampleFn.json) arr=await sampleFn.json(prompt,{modelTier:"default"});
+    else { const r=await sampleFn(prompt,{modelTier:"default"}); arr=JSON.parse(r.text.replace(/```json|```/g,"").trim()); }
+    if(!Array.isArray(arr)&&arr&&Array.isArray(arr.cards)) arr=arr.cards;
+    if(!Array.isArray(arr)) throw new Error("bad");
+    view.gen.items=arr.filter(x=>x&&x.q&&x.a).slice(0,n).map(x=>({q:String(x.q),a:String(x.a),why:String(x.why||""),tags:Array.isArray(x.tags)?x.tags.map(String).slice(0,3):[],keep:true}));
+  }catch(e){
+    if(e&&e.code==="not_granted"){ sampleFn=null; toast("Claude isn't available on this page"); go("home"); return; }
+    toast(e&&e.code==="rate_limited"?"Too many requests. Try again in a minute":"Couldn't generate. Try a shorter chunk");
+  }
+  view.gen.busy=false; render();
+}
+function addGenerated(){
+  const g=view.gen; const keep=(g.items||[]).filter(i=>i.keep);
+  keep.forEach(i=>S.cards.push({id:rid("c"),deck:g.deck,q:i.q,a:i.a,why:i.why,tags:i.tags,links:[]}));
+  markDirty("custom"); toast(keep.length+" cards added"); go("home");
+}
+
+/* ---------- SETTINGS ---------- */
+function renderSettings(){
+  $app().innerHTML=`
+    <div class="row"><button class="btn small ghost" onclick="go('home')">← Home</button><b>Settings</b></div>
+    <div class="card">
+      <label>New cards per day</label>
+      <select id="s-new" onchange="S.settings.newPerDay=+this.value;markDirty('progress');toast('Saved')">${[5,10,15,20,30,40].map(n=>`<option ${S.settings.newPerDay==n?"selected":""}>${n}</option>`).join("")}</select>
+      <p class="small muted">15 is a good pace during the semester. Each new card brings back a few reviews over the following days.</p>
+      <p class="small">Storage: <b>this device</b>. Copy a backup now and then: it also moves cards between this app and the Claude version.</p>
+    </div>
+    <div class="card">
+      <b>Backup</b>
+      <p class="small muted">Copy everything (your cards and progress) as text and keep it somewhere safe.</p>
+      <div class="row"><button class="btn" onclick="exportData()">Copy backup</button></div>
+      <label>Restore from backup</label><textarea id="imp" placeholder="Paste a backup here"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="importData()">Restore</button></div>
+    </div>
+    <div class="card">
+      <b>Reset progress</b>
+      <p class="small muted">Clears your review history. Your own cards stay.</p>
+      <button class="btn" onclick="resetProgress(this)">Reset progress</button>
+    </div>
+    <p class="small muted">How scheduling works: <b>Blanked</b> brings a card back in a minute, <b>Shaky</b> in 10 minutes or a slightly longer gap, <b>Got it</b> roughly multiplies the gap by 2.5, and <b>Easy</b> stretches it further. Cards you know well fade into the background and weak ones keep coming back.</p>`;
+}
+async function exportData(){
+  const txt=JSON.stringify({v:1,progress:S.progress,days:S.days,settings:S.settings,decks:S.decks,cards:S.cards});
+  try{ await navigator.clipboard.writeText(txt); toast("Backup copied"); }
+  catch(e){ const t=document.getElementById("imp"); t.value=txt; t.select(); toast("Copy it from the box below"); }
+}
+function importData(){
+  try{
+    const d=JSON.parse(document.getElementById("imp").value);
+    if(!d||d.v!==1) throw 0;
+    Object.assign(S,{progress:d.progress||{},days:d.days||{},settings:Object.assign({newPerDay:15},d.settings||{}),decks:d.decks||[],cards:d.cards||[]});
+    markDirty("progress"); markDirty("custom"); toast("Restored"); go("home");
+  }catch(e){ toast("That doesn't look like a Recall backup"); }
+}
+function resetProgress(btn){
+  if(btn.dataset.sure!=="1"){ btn.dataset.sure="1"; btn.textContent="Tap again to confirm"; return; }
+  S.progress={}; S.days={}; markDirty("progress"); toast("Progress reset"); go("home");
+}
+
+/* =================== ROUTER =================== */
+function render(){
+  const v=view.name;
+  if(v==="study") renderStudy();
+  else if(v==="browse") renderBrowse();
+  else if(v==="cardform") renderCardForm();
+  else if(v==="deckform") renderDeckForm();
+  else if(v==="generate"){ if(sampleFn) renderGenerate(); else { view={name:"home"}; renderHome(); } }
+  else if(v==="settings") renderSettings();
+  else renderHome();
+}
+document.addEventListener("keydown",e=>{
+  if(view.name!=="study"||!sess||!sess.queue.length) return;
+  if(e.target.tagName==="TEXTAREA"||e.target.tagName==="INPUT") return;
+  if(e.code==="Space"&&!sess.revealed){ e.preventDefault(); reveal(); }
+  else if(sess.revealed&&["1","2","3","4"].includes(e.key)) rateCard(+e.key);
+});
+window.addEventListener("pagehide",flush);
+
+loadLocal();
+render();
+setSync("Saved on this device");
+initCloud();
+</script>
+</body>
+</html>
